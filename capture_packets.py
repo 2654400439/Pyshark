@@ -2,7 +2,7 @@ from winpcapy import WinPcapUtils
 from winpcapy import WinPcapDevices
 import time
 import numpy as np
-import multiprocessing
+import sys
 
 flag = np.zeros((len(list(WinPcapDevices.list_devices().values()))))
 # flag = 0
@@ -10,8 +10,7 @@ flag = np.zeros((len(list(WinPcapDevices.list_devices().values()))))
 
 def show_flag():
     global flag
-    while True:
-        print(flag)
+    print(flag)
 
 
 def packet_callback3(win_pcap, param, header, pkt_data):
@@ -49,11 +48,4 @@ def device_packets_num(i):
 
 if __name__ == '__main__':
     device_show()
-    # p3 = multiprocessing.Process(target=device_packets_num, args=(3,))
-    # p4 = multiprocessing.Process(target=device_packets_num, args=(4,))
-    p5 = multiprocessing.Process(target=device_packets_num, args=(5,))
-
-    # p3.start()
-    # p4.start()
-    p5.start()
-
+    device_packets_num(4)
