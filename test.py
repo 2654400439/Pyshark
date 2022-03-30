@@ -25,5 +25,10 @@ def easy_packet_callback(win_pcap, param, header, pkt_data):
     # sys.exit(0)
 
 
-# 实现了实时抓包并打印每个包的源和目的ip
-WinPcapUtils.capture_on_device_name('\\Device\\NPF_{2603A7A3-97D9-408D-B688-30747C2C5B27}', easy_packet_callback)
+def start():
+    # 实现了实时抓包并打印每个包的源和目的ip
+    WinPcapUtils.capture_on_device_name('\\Device\\NPF_{2603A7A3-97D9-408D-B688-30747C2C5B27}', easy_packet_callback)
+
+
+if __name__ == '__main__':
+    start()

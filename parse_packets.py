@@ -2,11 +2,13 @@ from winpcapy import WinPcapUtils
 from winpcapy import WinPcapDevices
 import time
 import base64
+import sys
 
 # 按类似wireshark格式进行包展示
 # 序号，时间戳，源地址，目的地址，协议，包长度，其他信息
 # 能分类tcp，udp，icmp，arp，dns，tls和ipv6
 num = 0
+flag = 0
 
 
 def Parse_ip(pkt_data):
@@ -41,6 +43,9 @@ def Parse_ipv6(pkt_data):
 
 def Parse_packets(win_pcap, param, header, pkt_data):
     global num
+    global flag
+    if flag == 1:
+        win_pcap.stop()
     num += 1
     eth_protocol = base64.b16encode(pkt_data[12:14]).decode()
 
@@ -60,8 +65,15 @@ def Parse_packets(win_pcap, param, header, pkt_data):
 
 def device_packets():
     # 按网卡名称抓包
+    global flag
+    flag = 0
     device_true_name = list(WinPcapDevices.list_devices().keys())
     WinPcapUtils.capture_on_device_name(device_true_name[-1], Parse_packets)
+
+
+def pause_capture():
+    global flag
+    flag = 1
 
 
 if __name__ == '__main__':
