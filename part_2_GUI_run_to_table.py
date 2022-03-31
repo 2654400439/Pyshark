@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui
 import sys
-from PyQt5.QtCore import QEventLoop, QTimer
+from PyQt5.QtCore import QEventLoop, QTimer, QBasicTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QHeaderView, QTreeWidgetItem
 from PyQt5.QtGui import QBrush, QColor
 
@@ -9,6 +9,7 @@ from part_2_parse_packets import *
 
 import time
 import random
+from collections import Counter
 
 
 class EmittingStr(QtCore.QObject):
@@ -39,7 +40,12 @@ class ControlBoard(QMainWindow, Ui_MainWindow, QTableWidgetItem):
         self.tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
         self.tableWidget.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
         self.tableWidget.horizontalHeader().setSectionResizeMode(5, QHeaderView.ResizeToContents)
+        # 利用定时器展示协议占比
+        self.timer = QTimer()
+        self.timer.start(500)
+        self.timer.timeout.connect(self.set_progressBar)
         self.lines = []
+        self.lines_protocol = []
         self.id = 0
         self.row = 0
 
@@ -52,6 +58,9 @@ class ControlBoard(QMainWindow, Ui_MainWindow, QTableWidgetItem):
                 self.lines.append(text)
             else:
                 self.tableWidget.setItem(int(self.id / 16), int(self.id % 16 / 2), QTableWidgetItem(text))
+                # 保存协议类型
+                if self.id % 16 == 8:
+                    self.lines_protocol.append(text)
         if self.id % 16 == 0:
             if self.id != 0:
                 if self.tableWidget.item(self.row - 2, 4).text() == 'tcp':
@@ -65,6 +74,25 @@ class ControlBoard(QMainWindow, Ui_MainWindow, QTableWidgetItem):
                         self.tableWidget.item(self.row - 2, i).setBackground(QBrush(QColor(218, 238, 255)))
         self.id += 1
         self.tableWidget.verticalScrollBar().setSliderPosition(self.row)
+
+    def set_progressBar(self):
+        num = len(self.lines_protocol)
+        if num != 0:
+            protocol_count = Counter(self.lines_protocol)
+            arp_num = protocol_count['arp']
+            ipv6_num = protocol_count['ipv6']
+            tcp_num = protocol_count['tcp']
+            udp_num = protocol_count['udp']
+            ip_num = tcp_num + udp_num
+            self.progressBar.setValue(int(arp_num / num * 100))
+            self.progressBar_3.setValue(int(ipv6_num / num * 100))
+            self.progressBar_2.setValue(int(ip_num / num * 100))
+            icmp_num = protocol_count['icmp']
+            igmp_num = protocol_count['igmp']
+            total_num = tcp_num + udp_num + icmp_num + igmp_num
+            self.progressBar_4.setValue(int(tcp_num / total_num * 100))
+            self.progressBar_5.setValue(int(udp_num / total_num * 100))
+            self.progressBar_6.setValue(int((total_num - tcp_num - udp_num) / total_num * 100))
 
     def part_2(self, Item=None):
         if Item is None:

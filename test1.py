@@ -1,3 +1,9 @@
-a = r"b'\xff\xff\xff'"
-a = str.encode(a[2:-1]).decode('unicode-escape').encode('ISO-8859-1')
-print(a)
+from collections import Counter
+
+a = ['111', '111', '22', '3']
+tmp = list(Counter(a).keys())
+try:
+    tmp.remove('444')
+except:
+    pass
+print(tmp)

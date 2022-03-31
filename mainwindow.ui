@@ -211,7 +211,7 @@
                     </rect>
                 </property>
                 <property name="value">
-                    <number>30</number>
+                    <number>0</number>
                 </property>
                 <property name="textVisible">
                     <bool>false</bool>
@@ -258,7 +258,7 @@
                     </rect>
                 </property>
                 <property name="value">
-                    <number>30</number>
+                    <number>0</number>
                 </property>
                 <property name="textVisible">
                     <bool>false</bool>
@@ -277,7 +277,7 @@
                     </rect>
                 </property>
                 <property name="value">
-                    <number>30</number>
+                    <number>0</number>
                 </property>
                 <property name="textVisible">
                     <bool>false</bool>
@@ -353,13 +353,16 @@
                     </rect>
                 </property>
                 <property name="value">
-                    <number>30</number>
+                    <number>0</number>
                 </property>
                 <property name="textVisible">
                     <bool>false</bool>
                 </property>
                 <property name="orientation">
                     <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="format">
+                    <string>%p%</string>
                 </property>
             </widget>
             <widget class="QProgressBar" name="progressBar_5">
@@ -372,7 +375,7 @@
                     </rect>
                 </property>
                 <property name="value">
-                    <number>30</number>
+                    <number>0</number>
                 </property>
                 <property name="textVisible">
                     <bool>false</bool>
@@ -391,7 +394,7 @@
                     </rect>
                 </property>
                 <property name="value">
-                    <number>30</number>
+                    <number>0</number>
                 </property>
                 <property name="textVisible">
                     <bool>false</bool>
