@@ -6,8 +6,8 @@
             <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1299</width>
-                <height>841</height>
+                <width>1310</width>
+                <height>940</height>
             </rect>
         </property>
         <property name="windowTitle">
@@ -17,24 +17,11 @@
             <enum>Qt::LeftToRight</enum>
         </property>
         <widget class="QWidget" name="centralwidget">
-            <widget class="QLabel" name="label">
+            <widget class="QPushButton" name="pushButton_start">
                 <property name="geometry">
                     <rect>
                         <x>0</x>
                         <y>0</y>
-                        <width>141</width>
-                        <height>21</height>
-                    </rect>
-                </property>
-                <property name="text">
-                    <string>下面显示抓的包</string>
-                </property>
-            </widget>
-            <widget class="QPushButton" name="pushButton_start">
-                <property name="geometry">
-                    <rect>
-                        <x>370</x>
-                        <y>500</y>
                         <width>99</width>
                         <height>28</height>
                     </rect>
@@ -46,8 +33,8 @@
             <widget class="QPushButton" name="pushButton_pause">
                 <property name="geometry">
                     <rect>
-                        <x>590</x>
-                        <y>500</y>
+                        <x>130</x>
+                        <y>0</y>
                         <width>99</width>
                         <height>28</height>
                     </rect>
@@ -60,7 +47,7 @@
                 <property name="geometry">
                     <rect>
                         <x>0</x>
-                        <y>20</y>
+                        <y>60</y>
                         <width>1301</width>
                         <height>441</height>
                     </rect>
@@ -93,13 +80,13 @@
                     <enum>QFrame::Sunken</enum>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                    <enum>Qt::ScrollBarAlwaysOn</enum>
+                    <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="sizeAdjustPolicy">
                     <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
                 </property>
                 <property name="alternatingRowColors">
-                    <bool>false</bool>
+                    <bool>true</bool>
                 </property>
                 <property name="selectionBehavior">
                     <enum>QAbstractItemView::SelectRows</enum>
@@ -148,16 +135,409 @@
                 <column/>
                 <column/>
             </widget>
+            <widget class="QLabel" name="label">
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>30</y>
+                        <width>81</width>
+                        <height>31</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Filter</string>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="lineEdit">
+                <property name="geometry">
+                    <rect>
+                        <x>70</x>
+                        <y>30</y>
+                        <width>1151</width>
+                        <height>31</height>
+                    </rect>
+                </property>
+            </widget>
+            <widget class="QPushButton" name="pushButton">
+                <property name="geometry">
+                    <rect>
+                        <x>1220</x>
+                        <y>30</y>
+                        <width>81</width>
+                        <height>28</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Ok</string>
+                </property>
+            </widget>
+            <widget class="QTextBrowser" name="textBrowser">
+                <property name="geometry">
+                    <rect>
+                        <x>0</x>
+                        <y>750</y>
+                        <width>1301</width>
+                        <height>301</height>
+                    </rect>
+                </property>
+            </widget>
+            <widget class="QTreeWidget" name="treeWidget">
+                <property name="geometry">
+                    <rect>
+                        <x>0</x>
+                        <y>500</y>
+                        <width>811</width>
+                        <height>241</height>
+                    </rect>
+                </property>
+                <property name="font">
+                    <font>
+                        <pointsize>11</pointsize>
+                    </font>
+                </property>
+                <column>
+                    <property name="text">
+                        <string>各层数据报</string>
+                    </property>
+                </column>
+            </widget>
+            <widget class="QProgressBar" name="progressBar">
+                <property name="geometry">
+                    <rect>
+                        <x>850</x>
+                        <y>560</y>
+                        <width>31</width>
+                        <height>111</height>
+                    </rect>
+                </property>
+                <property name="value">
+                    <number>30</number>
+                </property>
+                <property name="textVisible">
+                    <bool>false</bool>
+                </property>
+                <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                </property>
+            </widget>
+            <widget class="QTextBrowser" name="textBrowser_2">
+                <property name="geometry">
+                    <rect>
+                        <x>810</x>
+                        <y>500</y>
+                        <width>491</width>
+                        <height>241</height>
+                    </rect>
+                </property>
+            </widget>
+            <widget class="QLabel" name="label_2">
+                <property name="geometry">
+                    <rect>
+                        <x>850</x>
+                        <y>510</y>
+                        <width>211</width>
+                        <height>31</height>
+                    </rect>
+                </property>
+                <property name="font">
+                    <font>
+                        <pointsize>11</pointsize>
+                    </font>
+                </property>
+                <property name="text">
+                    <string>网络层实时流量协议占比</string>
+                </property>
+            </widget>
+            <widget class="QProgressBar" name="progressBar_2">
+                <property name="geometry">
+                    <rect>
+                        <x>1010</x>
+                        <y>560</y>
+                        <width>31</width>
+                        <height>111</height>
+                    </rect>
+                </property>
+                <property name="value">
+                    <number>30</number>
+                </property>
+                <property name="textVisible">
+                    <bool>false</bool>
+                </property>
+                <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                </property>
+            </widget>
+            <widget class="QProgressBar" name="progressBar_3">
+                <property name="geometry">
+                    <rect>
+                        <x>930</x>
+                        <y>560</y>
+                        <width>31</width>
+                        <height>111</height>
+                    </rect>
+                </property>
+                <property name="value">
+                    <number>30</number>
+                </property>
+                <property name="textVisible">
+                    <bool>false</bool>
+                </property>
+                <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                </property>
+            </widget>
+            <widget class="QLabel" name="label_3">
+                <property name="geometry">
+                    <rect>
+                        <x>850</x>
+                        <y>690</y>
+                        <width>31</width>
+                        <height>18</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>ARP</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="label_4">
+                <property name="geometry">
+                    <rect>
+                        <x>930</x>
+                        <y>690</y>
+                        <width>41</width>
+                        <height>18</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>IPv6</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="label_5">
+                <property name="geometry">
+                    <rect>
+                        <x>1010</x>
+                        <y>690</y>
+                        <width>41</width>
+                        <height>18</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>IPv4</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="label_6">
+                <property name="geometry">
+                    <rect>
+                        <x>1070</x>
+                        <y>510</y>
+                        <width>211</width>
+                        <height>31</height>
+                    </rect>
+                </property>
+                <property name="font">
+                    <font>
+                        <pointsize>11</pointsize>
+                    </font>
+                </property>
+                <property name="text">
+                    <string>传输层实时流量协议占比</string>
+                </property>
+            </widget>
+            <widget class="QProgressBar" name="progressBar_4">
+                <property name="geometry">
+                    <rect>
+                        <x>1120</x>
+                        <y>570</y>
+                        <width>161</width>
+                        <height>21</height>
+                    </rect>
+                </property>
+                <property name="value">
+                    <number>30</number>
+                </property>
+                <property name="textVisible">
+                    <bool>false</bool>
+                </property>
+                <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                </property>
+            </widget>
+            <widget class="QProgressBar" name="progressBar_5">
+                <property name="geometry">
+                    <rect>
+                        <x>1120</x>
+                        <y>620</y>
+                        <width>161</width>
+                        <height>21</height>
+                    </rect>
+                </property>
+                <property name="value">
+                    <number>30</number>
+                </property>
+                <property name="textVisible">
+                    <bool>false</bool>
+                </property>
+                <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                </property>
+            </widget>
+            <widget class="QProgressBar" name="progressBar_6">
+                <property name="geometry">
+                    <rect>
+                        <x>1120</x>
+                        <y>670</y>
+                        <width>161</width>
+                        <height>21</height>
+                    </rect>
+                </property>
+                <property name="value">
+                    <number>30</number>
+                </property>
+                <property name="textVisible">
+                    <bool>false</bool>
+                </property>
+                <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                </property>
+            </widget>
+            <widget class="QLabel" name="label_7">
+                <property name="geometry">
+                    <rect>
+                        <x>1080</x>
+                        <y>570</y>
+                        <width>41</width>
+                        <height>18</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>TCP</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="label_8">
+                <property name="geometry">
+                    <rect>
+                        <x>1080</x>
+                        <y>620</y>
+                        <width>41</width>
+                        <height>18</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>UDP</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="label_9">
+                <property name="geometry">
+                    <rect>
+                        <x>1080</x>
+                        <y>670</y>
+                        <width>41</width>
+                        <height>18</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Else</string>
+                </property>
+            </widget>
+            <zorder>textBrowser_2</zorder>
+            <zorder>pushButton_start</zorder>
+            <zorder>pushButton_pause</zorder>
+            <zorder>tableWidget</zorder>
+            <zorder>label</zorder>
+            <zorder>lineEdit</zorder>
+            <zorder>pushButton</zorder>
+            <zorder>textBrowser</zorder>
+            <zorder>treeWidget</zorder>
+            <zorder>progressBar</zorder>
+            <zorder>label_2</zorder>
+            <zorder>progressBar_2</zorder>
+            <zorder>progressBar_3</zorder>
+            <zorder>label_3</zorder>
+            <zorder>label_4</zorder>
+            <zorder>label_5</zorder>
+            <zorder>label_6</zorder>
+            <zorder>progressBar_4</zorder>
+            <zorder>progressBar_5</zorder>
+            <zorder>progressBar_6</zorder>
+            <zorder>label_7</zorder>
+            <zorder>label_8</zorder>
+            <zorder>label_9</zorder>
         </widget>
         <widget class="QMenuBar" name="menubar">
             <property name="geometry">
                 <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>1299</width>
+                    <width>1310</width>
                     <height>26</height>
                 </rect>
             </property>
+            <widget class="QMenu" name="menu">
+                <property name="title">
+                    <string>文件</string>
+                </property>
+            </widget>
+            <widget class="QMenu" name="menu_2">
+                <property name="title">
+                    <string>编辑</string>
+                </property>
+            </widget>
+            <widget class="QMenu" name="menu_3">
+                <property name="title">
+                    <string>视图</string>
+                </property>
+            </widget>
+            <widget class="QMenu" name="menu_4">
+                <property name="title">
+                    <string>跳转</string>
+                </property>
+            </widget>
+            <widget class="QMenu" name="menu_5">
+                <property name="title">
+                    <string>捕获</string>
+                </property>
+            </widget>
+            <widget class="QMenu" name="menu_6">
+                <property name="title">
+                    <string>分析</string>
+                </property>
+            </widget>
+            <widget class="QMenu" name="menu_7">
+                <property name="title">
+                    <string>统计</string>
+                </property>
+            </widget>
+            <widget class="QMenu" name="menu_8">
+                <property name="title">
+                    <string>电话</string>
+                </property>
+            </widget>
+            <widget class="QMenu" name="menu_9">
+                <property name="title">
+                    <string>无线</string>
+                </property>
+            </widget>
+            <widget class="QMenu" name="menu_10">
+                <property name="title">
+                    <string>工具</string>
+                </property>
+            </widget>
+            <widget class="QMenu" name="menu_11">
+                <property name="title">
+                    <string>帮助</string>
+                </property>
+            </widget>
+            <addaction name="menu"/>
+            <addaction name="menu_2"/>
+            <addaction name="menu_3"/>
+            <addaction name="menu_4"/>
+            <addaction name="menu_5"/>
+            <addaction name="menu_6"/>
+            <addaction name="menu_7"/>
+            <addaction name="menu_8"/>
+            <addaction name="menu_9"/>
+            <addaction name="menu_10"/>
+            <addaction name="menu_11"/>
         </widget>
         <widget class="QStatusBar" name="statusbar"/>
     </widget>

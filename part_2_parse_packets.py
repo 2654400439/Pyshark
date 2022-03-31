@@ -22,7 +22,8 @@ def Parse_ip(pkt_data):
     protocol_num = ip_frame[9]
     _len = ip_frame[2] * 256 + ip_frame[3] + 14
     try:
-        protocol_num_to_protocol = {'1': 'icmp', '2': 'igmp', '6': 'tcp', '17': 'udp'}
+        protocol_num_to_protocol = {'1': 'icmp', '2': 'igmp', '3': 'ggp', '5': 'st', '6': 'tcp', '8': 'egp', '9': 'igp',
+                                    '11': 'nvp', '17': 'udp'}
         protocol = protocol_num_to_protocol[str(protocol_num)]
     except:
         protocol = protocol_num
@@ -43,7 +44,7 @@ def Parse_ip(pkt_data):
         src_port = udp_frame[0] * 256 + udp_frame[1]
         dst_port = udp_frame[2] * 256 + udp_frame[3]
         info = str(src_port) + ' -> ' + str(dst_port)
-    print(num, time_stamp, src_ip, dst_ip, protocol, _len, info)
+    print(num, time_stamp, src_ip, dst_ip, protocol, _len, info, pkt_data)
 
 
 def Parse_arp(pkt_data):
@@ -64,7 +65,7 @@ def Parse_arp(pkt_data):
             info = 'ARP reply'
         else:
             info = 'RARP'
-    print(num, time_stamp, src_ip, dst_ip, protocol, _len, info)
+    print(num, time_stamp, src_ip, dst_ip, protocol, _len, info, pkt_data)
 
 
 def Parse_ipv6(pkt_data):
@@ -74,7 +75,7 @@ def Parse_ipv6(pkt_data):
     protocol = 'ipv6'
     src_ip = 'padding'
     dst_ip = 'padding'
-    print(num, time_stamp, src_ip, dst_ip, protocol, _len, info)
+    print(num, time_stamp, src_ip, dst_ip, protocol, _len, info, pkt_data)
 
 
 def Parse_packets(win_pcap, param, header, pkt_data):

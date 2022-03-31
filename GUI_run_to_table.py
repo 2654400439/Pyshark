@@ -2,6 +2,7 @@ from PyQt5 import QtCore, QtGui
 import sys
 from PyQt5.QtCore import QEventLoop, QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QHeaderView
+from PyQt5.QtGui import QBrush, QColor
 
 from mainwindow import *
 from parse_packets import *
@@ -39,15 +40,28 @@ class ControlBoard(QMainWindow, Ui_MainWindow, QTableWidgetItem):
         self.tableWidget.horizontalHeader().setSectionResizeMode(5, QHeaderView.ResizeToContents)
         self.lines = []
         self.id = 0
+        self.row = 0
 
     def outputTable(self, text):
-        row = self.tableWidget.rowCount()
         if self.id % 14 == 0:
-            self.tableWidget.setRowCount(row + 1)
+            self.tableWidget.setRowCount(self.row + 1)
+            self.row += 1
+            # self.tableWidget.item(row+1,0).setBackground(QBrush(QColor(255, 0, 0)))
         if self.id % 2 == 0:
             self.tableWidget.setItem(int(self.id / 14), int(self.id % 14 / 2), QTableWidgetItem(text))
+        if self.id % 14 == 0:
+            if self.id != 0:
+                if self.tableWidget.item(self.row - 2, 4).text() == 'tcp':
+                    for i in range(7):
+                        self.tableWidget.item(self.row - 2, i).setBackground(QBrush(QColor(228, 255, 199)))
+                elif self.tableWidget.item(self.row - 2, 4).text() == 'arp':
+                    for i in range(7):
+                        self.tableWidget.item(self.row - 2, i).setBackground(QBrush(QColor(250, 240, 215)))
+                elif self.tableWidget.item(self.row - 2, 4).text() == 'udp':
+                    for i in range(7):
+                        self.tableWidget.item(self.row - 2, i).setBackground(QBrush(QColor(218, 238, 255)))
         self.id += 1
-        self.tableWidget.verticalScrollBar().setSliderPosition(row)
+        self.tableWidget.verticalScrollBar().setSliderPosition(self.row)
 
     def print_packets(self):
         device_packets()
