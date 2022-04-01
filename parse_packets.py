@@ -113,4 +113,9 @@ def pause_capture():
 
 
 if __name__ == '__main__':
-    device_packets()
+    # device_packets()
+    network_card = WinPcapDevices.list_devices()
+    card_name = list(network_card.keys())
+    card_ename = list(network_card.values())
+    print(card_name)
+    print(card_ename)

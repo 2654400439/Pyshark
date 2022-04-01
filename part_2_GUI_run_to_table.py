@@ -1,14 +1,17 @@
 from PyQt5 import QtCore, QtGui
 import sys
-from PyQt5.QtCore import QEventLoop, QTimer, QBasicTimer
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QHeaderView, QTreeWidgetItem
+from PyQt5.QtCore import QEventLoop, QTimer, QBasicTimer, Qt
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QHeaderView, QTreeWidgetItem, QRadioButton, \
+    QAbstractItemView
 from PyQt5.QtGui import QBrush, QColor
 
 from mainwindow import *
+from startup import *
 from part_2_parse_packets import *
 
 import time
 import random
+from winpcapy import WinPcapDevices
 from collections import Counter
 
 
@@ -21,7 +24,44 @@ class EmittingStr(QtCore.QObject):
         QApplication.processEvents()
 
 
+class Startup(QMainWindow, Ui_startup):
+    show_second_win_signal = QtCore.pyqtSignal()
+
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+        self.label_2.setStyleSheet("color:grey")
+        self.label_3.setStyleSheet("color:grey")
+        # 设置固定窗口大小
+        self.setFixedSize(self.width(), self.height())
+        self.tableWidget.setHorizontalHeaderLabels(['网卡真实名称', '网卡简称', '是否有流量'])
+        self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.tableWidget.itemDoubleClicked.connect(self.show_second_win_signal.emit)
+        self.tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        self.tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.create_table()
+
+    def create_table(self):
+        network_card = WinPcapDevices.list_devices()
+        card_name = list(network_card.keys())
+        card_ename = list(network_card.values())
+        self.tableWidget.setRowCount(len(card_name))
+        for i in range(len(card_name)):
+            self.tableWidget.setItem(i, 0, QTableWidgetItem(card_name[i]))
+            self.tableWidget.setItem(i, 1, QTableWidgetItem(card_ename[i]))
+            radio_button = QRadioButton()
+            hLayout = QtWidgets.QHBoxLayout()
+            hLayout.addWidget(radio_button)
+            hLayout.setAlignment(radio_button, Qt.AlignCenter)
+            widget = QtWidgets.QWidget()
+            widget.setLayout(hLayout)
+            self.tableWidget.setCellWidget(i, 2, widget)
+
+
 class ControlBoard(QMainWindow, Ui_MainWindow, QTableWidgetItem):
+    show_first_win_signal = QtCore.pyqtSignal()
+
     def __init__(self, parent=None):
         super(ControlBoard, self).__init__(parent)
         self.setupUi(self)
@@ -40,6 +80,10 @@ class ControlBoard(QMainWindow, Ui_MainWindow, QTableWidgetItem):
         self.tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
         self.tableWidget.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
         self.tableWidget.horizontalHeader().setSectionResizeMode(5, QHeaderView.ResizeToContents)
+        # 设置表格不可修改
+        self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        # 设置固定窗口大小
+        self.setFixedSize(self.width(), self.height())
         # 利用定时器展示协议占比
         self.timer = QTimer()
         self.timer.start(500)
@@ -48,6 +92,7 @@ class ControlBoard(QMainWindow, Ui_MainWindow, QTableWidgetItem):
         self.lines_protocol = []
         self.id = 0
         self.row = 0
+        self.flag_info = 0
 
     def outputTable(self, text):
         if self.id % 16 == 0:
@@ -99,8 +144,24 @@ class ControlBoard(QMainWindow, Ui_MainWindow, QTableWidgetItem):
             return
         else:
             row = Item.row()  # 获取行数
-            self.textBrowser.append(self.lines[row])
             raw_data = str.encode(self.lines[row][2:-1]).decode('unicode-escape').encode('ISO-8859-1')
+            # 先清空输出框
+            self.textBrowser.clear()
+            text_info = ''
+            self.flag_info = 0
+            for i in range(len(raw_data)):
+                if self.flag_info != 0:
+                    if self.flag_info % 16 == 8:
+                        text_info += '\t  '
+                    if self.flag_info % 16 == 0:
+                        text_info += '\n'
+                tmp_info = str(hex(raw_data[i]))[2:]
+                if len(tmp_info) == 1:
+                    tmp_info = '0' + tmp_info
+                text_info += tmp_info
+                text_info += '  '
+                self.flag_info += 1
+            self.textBrowser.append(text_info)
             # 刷新树结构
             for i in range(self.treeWidget.topLevelItemCount()):
                 self.treeWidget.takeTopLevelItem(0)
@@ -221,8 +282,15 @@ class ControlBoard(QMainWindow, Ui_MainWindow, QTableWidgetItem):
         pause_capture()
 
 
+def show_second():
+    ui_1.show()
+    ui_0.hide()
+
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    ui = ControlBoard()
-    ui.show()
+    ui_0 = Startup()
+    ui_0.show()
+    ui_0.show_second_win_signal.connect(show_second)
+    ui_1 = ControlBoard()
     sys.exit(app.exec_())
