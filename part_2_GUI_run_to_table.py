@@ -2,17 +2,35 @@ from PyQt5 import QtCore, QtGui
 import sys
 from PyQt5.QtCore import QEventLoop, QTimer, QBasicTimer, Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QHeaderView, QTreeWidgetItem, QRadioButton, \
-    QAbstractItemView
+    QAbstractItemView, QMessageBox
 from PyQt5.QtGui import QBrush, QColor
 
 from mainwindow import *
 from startup import *
+from initialize import *
 from part_2_parse_packets import *
 
 import time
 import random
-from winpcapy import WinPcapDevices
+from winpcapy import WinPcapDevices, WinPcapUtils, WinPcap
 from collections import Counter
+import sys
+from func_timeout import func_set_timeout
+import func_timeout
+
+
+def flow_bool(win_pcap, param, header, pkt_data):
+    i = 0
+    if i == 0:
+        print('有包')
+    i += 1
+
+
+@func_set_timeout(1.5)
+def capture(num):
+    device_true_name = list(WinPcapDevices.list_devices().keys())
+    with WinPcap(device_true_name[num]) as capture:
+        capture.run(callback=flow_bool, limit=1)
 
 
 class EmittingStr(QtCore.QObject):
@@ -24,39 +42,72 @@ class EmittingStr(QtCore.QObject):
         QApplication.processEvents()
 
 
+class Initialize(QMainWindow, Ui_initialize):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+
+
 class Startup(QMainWindow, Ui_startup):
-    show_second_win_signal = QtCore.pyqtSignal()
+    show_second_win_signal = QtCore.pyqtSignal(str)
 
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        msg_box = QMessageBox.information(self, '提示', '请点击确定以开始读取网卡流量信息\n此过程大约需要5秒', QMessageBox.Yes)
         self.label_2.setStyleSheet("color:grey")
         self.label_3.setStyleSheet("color:grey")
+        self.network_card = WinPcapDevices.list_devices()
+        self.radioflag = 0
+        sys.stdout = EmittingStr(textWritten=self.setradio)
         # 设置固定窗口大小
         self.setFixedSize(self.width(), self.height())
         self.tableWidget.setHorizontalHeaderLabels(['网卡真实名称', '网卡简称', '是否有流量'])
         self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.tableWidget.itemDoubleClicked.connect(self.show_second_win_signal.emit)
+        self.tableWidget.itemDoubleClicked.connect(self.card_signal)
+        # self.tableWidget.itemDoubleClicked.connect(self.show_second_win_signal.emit)
         self.tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
         self.tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
         self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.create_table()
+        # 设置bool流量的亮灯情况
+        for i in range(len(flow_bool_flag)):
+            try:
+                self.radioflag = i
+                capture(i)
+            except func_timeout.exceptions.FunctionTimedOut:
+                pass
+
+    def card_signal(self):
+        row = self.tableWidget.currentRow()
+        self.show_second_win_signal.emit(str(row))
 
     def create_table(self):
-        network_card = WinPcapDevices.list_devices()
-        card_name = list(network_card.keys())
-        card_ename = list(network_card.values())
+        card_name = list(self.network_card.keys())
+        card_ename = list(self.network_card.values())
         self.tableWidget.setRowCount(len(card_name))
         for i in range(len(card_name)):
             self.tableWidget.setItem(i, 0, QTableWidgetItem(card_name[i]))
             self.tableWidget.setItem(i, 1, QTableWidgetItem(card_ename[i]))
             radio_button = QRadioButton()
+            # 亮灯（按钮被选中）
+            # radio_button.toggle()
             hLayout = QtWidgets.QHBoxLayout()
             hLayout.addWidget(radio_button)
             hLayout.setAlignment(radio_button, Qt.AlignCenter)
             widget = QtWidgets.QWidget()
             widget.setLayout(hLayout)
             self.tableWidget.setCellWidget(i, 2, widget)
+
+    def setradio(self):
+        radio_button = QRadioButton()
+        radio_button.toggle()
+        hLayout = QtWidgets.QHBoxLayout()
+        hLayout.addWidget(radio_button)
+        hLayout.setAlignment(radio_button, Qt.AlignCenter)
+        widget = QtWidgets.QWidget()
+        widget.setLayout(hLayout)
+        self.tableWidget.setCellWidget(self.radioflag, 2, widget)
 
 
 class ControlBoard(QMainWindow, Ui_MainWindow, QTableWidgetItem):
@@ -93,6 +144,7 @@ class ControlBoard(QMainWindow, Ui_MainWindow, QTableWidgetItem):
         self.id = 0
         self.row = 0
         self.flag_info = 0
+        self.card_num = 0
 
     def outputTable(self, text):
         if self.id % 16 == 0:
@@ -276,19 +328,26 @@ class ControlBoard(QMainWindow, Ui_MainWindow, QTableWidgetItem):
             QApplication.processEvents()
 
     def print_packets(self):
-        device_packets()
+        device_packets(self.card_num)
 
     def pause(self):
         pause_capture()
 
 
-def show_second():
+def show_second(tmp):
     ui_1.show()
+    ui_1.card_num = int(tmp)
     ui_0.hide()
+
+
+# def hide_ini():
+#     ui_ini.hide()
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    # ui_ini = Initialize()
+    # ui_ini.show()
     ui_0 = Startup()
     ui_0.show()
     ui_0.show_second_win_signal.connect(show_second)

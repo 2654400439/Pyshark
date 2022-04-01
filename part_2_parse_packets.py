@@ -3,12 +3,15 @@ from winpcapy import WinPcapDevices
 import time
 import base64
 import sys
+from PyQt5.QtCore import QTimer
 
 # 按类似wireshark格式进行包展示
 # 序号，时间戳，源地址，目的地址，协议，包长度，其他信息
 # 能分类tcp，udp，icmp，arp，dns，tls和ipv6
 num = 0
 flag = 0
+flow_bool_flag = [0 for i in range(len(WinPcapDevices.list_devices()))]
+now_card = 0
 
 
 def Parse_ip(pkt_data):
@@ -100,12 +103,32 @@ def Parse_packets(win_pcap, param, header, pkt_data):
         print(eth_protocol)
 
 
-def device_packets():
+def flow_bool(win_pcap, param, header, pkt_data):
+    # global flow_bool_flag
+    # global now_card
+    QTimer.singleShot(1000, sys.exit(0))
+    # global flag
+    # if flag == 1:
+    #     win_pcap.stop()
+    # print(pkt_data)
+
+
+def device_packets(num):
     # 按网卡名称抓包
     global flag
     flag = 0
     device_true_name = list(WinPcapDevices.list_devices().keys())
-    WinPcapUtils.capture_on_device_name(device_true_name[-1], Parse_packets)
+    WinPcapUtils.capture_on_device_name(device_true_name[num], Parse_packets)
+
+
+def device_packets_bool(num):
+    # 按网卡名称抓包
+    global flag
+    global now_card
+    now_card = int(num)
+    flag = 0
+    device_true_name = list(WinPcapDevices.list_devices().keys())
+    WinPcapUtils.capture_on_device_name(device_true_name[-2], flow_bool)
 
 
 def pause_capture():
@@ -113,5 +136,10 @@ def pause_capture():
     flag = 1
 
 
+def back_to_ui():
+    global flow_bool_flag
+    return flow_bool_flag
+
+
 if __name__ == '__main__':
-    device_packets()
+    device_packets(num)
