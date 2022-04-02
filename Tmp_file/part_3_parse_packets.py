@@ -3,8 +3,6 @@ from winpcapy import WinPcapDevices
 from winpcapy import WinPcap
 import time
 from multiprocessing import Process
-import multiprocessing
-import eventlet
 from func_timeout import func_set_timeout
 import func_timeout
 

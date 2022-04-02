@@ -1,14 +1,8 @@
-from PyQt5 import QtCore, QtGui
-import sys
-from PyQt5.QtCore import QEventLoop, QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QHeaderView
 from PyQt5.QtGui import QBrush, QColor
 
 from mainwindow import *
-from parse_packets import *
-
-import time
-import random
+from Tmp_file.parse_packets import *
 
 
 class EmittingStr(QtCore.QObject):

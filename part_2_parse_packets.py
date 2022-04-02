@@ -103,6 +103,31 @@ def Parse_packets(win_pcap, param, header, pkt_data):
         print(eth_protocol)
 
 
+def clear():
+    global num
+    num = 0
+
+
+def Parse_packets_fake(pkt_data):
+    global num
+    num += 1
+    pkt_data = str.encode(pkt_data[2:-1]).decode('unicode-escape').encode('ISO-8859-1')
+    eth_protocol = base64.b16encode(pkt_data[12:14]).decode()
+
+    if eth_protocol == '0800':
+        # 封装的是ip数据报文
+        Parse_ip(pkt_data)
+    elif eth_protocol == '0806':
+        # 封装的是arp数据报文
+        Parse_arp(pkt_data)
+    elif eth_protocol == '86DD':
+        # 封装的是ipv6数据报文
+        Parse_ipv6(pkt_data)
+    else:
+        print('else')
+        print(eth_protocol)
+
+
 def flow_bool(win_pcap, param, header, pkt_data):
     # global flow_bool_flag
     # global now_card

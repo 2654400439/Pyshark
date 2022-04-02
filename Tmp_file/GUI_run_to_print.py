@@ -1,12 +1,8 @@
-from PyQt5 import QtCore, QtGui
-import sys
-from PyQt5.QtCore import QEventLoop, QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
 
 from mainwindow import *
-from parse_packets import *
+from Tmp_file.parse_packets import *
 
-import time
 import random
 
 

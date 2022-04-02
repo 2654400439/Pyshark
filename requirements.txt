@@ -1,0 +1,4 @@
+func_timeout==4.3.5
+numpy==1.19.5
+PyQt5==5.15.6
+winpcapy==1.0.2

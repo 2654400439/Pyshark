@@ -1,5 +1,3 @@
-from PyQt5 import QtCore, QtGui
-import sys
 from PyQt5.QtCore import QEventLoop, QTimer, QBasicTimer, Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QHeaderView, QTreeWidgetItem, QRadioButton, \
     QAbstractItemView, QMessageBox
@@ -7,11 +5,8 @@ from PyQt5.QtGui import QBrush, QColor
 
 from mainwindow import *
 from startup import *
-from initialize import *
 from part_2_parse_packets import *
 
-import time
-import random
 from winpcapy import WinPcapDevices, WinPcapUtils, WinPcap
 from collections import Counter
 import sys
@@ -42,12 +37,6 @@ class EmittingStr(QtCore.QObject):
         QApplication.processEvents()
 
 
-class Initialize(QMainWindow, Ui_initialize):
-    def __init__(self):
-        super().__init__()
-        self.setupUi(self)
-
-
 class Startup(QMainWindow, Ui_startup):
     show_second_win_signal = QtCore.pyqtSignal(str)
 
@@ -57,6 +46,7 @@ class Startup(QMainWindow, Ui_startup):
         msg_box = QMessageBox.information(self, '提示', '请点击确定以开始读取网卡流量信息\n此过程大约需要5秒', QMessageBox.Yes)
         self.label_2.setStyleSheet("color:grey")
         self.label_3.setStyleSheet("color:grey")
+        self.label_5.setStyleSheet("color:red")
         self.network_card = WinPcapDevices.list_devices()
         self.radioflag = 0
         sys.stdout = EmittingStr(textWritten=self.setradio)
@@ -121,6 +111,8 @@ class ControlBoard(QMainWindow, Ui_MainWindow, QTableWidgetItem):
         # sys.stderr = EmittingStr(textWritten=self.outputTable)
         self.pushButton_start.clicked.connect(self.print_packets)
         self.pushButton_pause.clicked.connect(self.pause)
+        self.pushButton.clicked.connect(self.filter)
+        self.lineEdit.setStyleSheet("color:grey")
         self.tableWidget.itemClicked.connect(self.part_2)
         self.tableWidget.setHorizontalHeaderLabels(['No.', 'Time', 'Source', 'Destination', 'Protocol', 'len', 'Info'])
         # 列宽自动调整
@@ -327,6 +319,25 @@ class ControlBoard(QMainWindow, Ui_MainWindow, QTableWidgetItem):
                 network.setText(0, 'IPv6  padding')
             QApplication.processEvents()
 
+    def filter(self):
+        filter_parm = self.lineEdit.text()
+        if filter_parm not in ['tcp', 'udp', 'arp', 'ipv6']:
+            msg_box = QMessageBox(QMessageBox.Warning, '警告', '目前只支持对于tcp，udp，arp，ipv6进行过滤')
+            msg_box.exec_()
+        else:
+            self.filter_output(filter_parm)
+
+    def filter_output(self, filter_parm):
+        filter_index = [i for i, x in enumerate(self.lines_protocol) if x == filter_parm]
+        # 逆序删除，正序删除会有一些删除不成功
+        for rowNum in range(0, self.tableWidget.rowCount())[::-1]:
+            self.tableWidget.removeRow(rowNum)
+        self.id = 0
+        self.row = 0
+        clear()
+        for i in range(len(filter_index)):
+            Parse_packets_fake(self.lines[filter_index[i]])
+
     def print_packets(self):
         device_packets(self.card_num)
 
@@ -340,14 +351,9 @@ def show_second(tmp):
     ui_0.hide()
 
 
-# def hide_ini():
-#     ui_ini.hide()
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    # ui_ini = Initialize()
-    # ui_ini.show()
     ui_0 = Startup()
     ui_0.show()
     ui_0.show_second_win_signal.connect(show_second)
